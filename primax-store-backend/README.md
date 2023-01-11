@@ -26,6 +26,8 @@ Enpoints and Methods are:
 - /api/customers/create (POST)
 - /api/products (GET, POST)
 - /api/products/:id (GET, PUT, DELETE)
+- /api/products/search?name=product_name (GET)
+- /api/products/sort_by?price="asc" [lowest] or "desc" [highest] (GET)
 - /api/orders (GET)
 - /api/orders/:id (GET)
 - /api/orders/create (POST)
