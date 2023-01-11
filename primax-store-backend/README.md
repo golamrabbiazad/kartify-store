@@ -20,7 +20,7 @@ Then, the app run on port `:8080`
 
 Enpoints and Methods are:
 
-```http
+```
 - /api/customers (GET)
 - /api/customers/:id (GET)
 - /api/customers/create (POST)
