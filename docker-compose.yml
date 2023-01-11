@@ -15,7 +15,7 @@ services:
     depends_on:
       - postgres
   postgres:
-    image: postgres:alpine
+    image: postgres:latest
     container_name: postgres
     environment:
       - POSTGRES_DB=primaxdb
