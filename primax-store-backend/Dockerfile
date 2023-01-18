@@ -1,16 +1,16 @@
-FROM oracle/graalvm-ce:20.3.0-java17 as build
+FROM eclipse-temurin:17-jdk-jammy as builder
 
-COPY . /project
+WORKDIR /opt/app
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
+COPY ./src ./src
+RUN ./mvnw clean install
 
-RUN gu install native-image && \
-    cd /project && \
-    ./mvnw package -Pnative
 
-FROM oracle/graalvm-ce:20.3.0-java17
-
-COPY --from=build /project/target/primax-store-backend-*-runner /application
-
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /opt/app
 EXPOSE 8080
+COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
 
-ENTRYPOINT ["/application"]
-
+ENTRYPOINT ["java", "-jar", "/opt/app/*.jar" ]

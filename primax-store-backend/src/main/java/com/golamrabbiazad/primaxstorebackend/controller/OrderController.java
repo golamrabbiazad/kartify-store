@@ -6,25 +6,19 @@ import com.golamrabbiazad.primaxstorebackend.model.Order;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
 import com.golamrabbiazad.primaxstorebackend.service.OrderService;
 import com.golamrabbiazad.primaxstorebackend.service.ProductService;
-import org.springframework.stereotype.Controller;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RestController
 @RequestMapping("/api/orders")
+@AllArgsConstructor
 public class OrderController {
     private final OrderService orderService;
     private final CustomerService customerService;
-
     private final ProductService productService;
 
-    public OrderController(OrderService orderService, CustomerService customerService, ProductService productService) {
-        this.orderService = orderService;
-        this.customerService = customerService;
-        this.productService = productService;
-    }
 
     @GetMapping
     public List<Order> getAllOrders() {

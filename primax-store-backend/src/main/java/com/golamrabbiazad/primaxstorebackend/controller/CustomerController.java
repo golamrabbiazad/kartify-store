@@ -3,20 +3,20 @@ package com.golamrabbiazad.primaxstorebackend.controller;
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.model.Customer;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
-import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RestController
 @RequestMapping("/api/customers")
+@AllArgsConstructor
+@Slf4j
 public class CustomerController {
     private final CustomerService customerService;
-
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
 
     @GetMapping
     public List<Customer> getAllCustomers() {
@@ -29,8 +29,11 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public Customer getCustomer (@RequestBody Customer customer) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Customer getCustomer (@RequestBody @Valid Customer customer) {
         customerService.createCustomer(customer);
+
+        log.info("customer created!");
 
         return customer;
     }

@@ -3,20 +3,19 @@ package com.golamrabbiazad.primaxstorebackend.controller;
 import com.golamrabbiazad.primaxstorebackend.exception.ProductNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.model.Product;
 import com.golamrabbiazad.primaxstorebackend.service.ProductService;
-import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
 @RestController
 @RequestMapping("/api/products")
+@AllArgsConstructor
+@CrossOrigin("*")
 public class ProductController {
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     public List<Product> getAllProducts() {
@@ -39,18 +38,21 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product createProduct(@RequestBody @Valid Product product) {
         productService.createProduct(product);
 
         return product;
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Product updateProduct(@PathVariable String id, @RequestBody Product product) throws ProductNotFoundException {
         return productService.updateProduct(id, product);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
     }
