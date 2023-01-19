@@ -1,67 +1,46 @@
-### GET request with a header
+### GET request to get all products
 GET http://localhost:8080/api/products
 Accept: application/json
 
-### GET request with parameter of sorted price
-GET http://localhost:8080/api/products?sort_by=ASE
+### GET request to get single product
+GET http://localhost:8080/api/products/:id
+
+### GET request with parameter of sorted price by ascending(lowest) order
+GET http://localhost:8080/api/products/sort_by?price="asc"
 Accept: application/json
 
-### GET request with environment variables
-GET {{host}}/get?show_env={{show_env}}
+### GET request with parameter of sorted price by descending(heightest) order
+GET http://localhost:8080/api/products/sort_by?price="desc"
 Accept: application/json
 
-### GET request with disabled redirects
-# @no-redirect
-GET http://httpbin.org/status/301
-
-### GET request with dynamic variables
-GET http://httpbin.org/anything?id={{$uuid}}&ts={{$timestamp}}
-
-###
-
+### GET request with parameter of search by product
+http://localhost:8080/api/products/search?name=product_name
 
 
 
 ### Send POST request with json body
-POST https://httpbin.org/post
+POST http://localhost:8080//api/products
 Content-Type: application/json
 
 {
-  "id": 999,
-  "value": "content"
+  "name": "fullstack app v2",
+  "description": "Best course ever!",
+  "price": 49.99,
+  "quantity": 79,
+  "image": "https://github.com/hendrixer"
 }
 
-### Send POST request with body as parameters
-POST https://httpbin.org/post
-Content-Type: application/x-www-form-urlencoded
 
-id=999&value=content
 
-### Send a form with the text and file fields
-POST https://httpbin.org/post
-Content-Type: multipart/form-data; boundary=WebAppBoundary
-
---WebAppBoundary
-Content-Disposition: form-data; name="element-name"
-Content-Type: text/plain
-
-Name
---WebAppBoundary
-Content-Disposition: form-data; name="data"; filename="data.json"
-Content-Type: application/json
-
-< ./request-form-data.json
---WebAppBoundary--
-
-### Send request with dynamic variables in request's body
-POST https://httpbin.org/post
+### Send PUT request if price to updated by id
+PUT http://localhost:8080//api/products/:id
 Content-Type: application/json
 
 {
-  "id": {{$uuid}},
-  "price": {{$randomInt}},
-  "ts": {{$timestamp}},
-  "value": "content"
+  "price": 49.99
 }
 
-###
+
+### Send DELETE request if a product delete by id
+DELETE http://localhost:8080//api/products/:id
+Content-Type: application/json
