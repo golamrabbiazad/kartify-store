@@ -1,67 +1,25 @@
-### GET request with a header
-GET http://localhost:8080/api/products
-Accept: application/json
+### GET request to get all orders
+GET http://localhost:8080/api/orders
 
-### GET request with parameter of sorted price
-GET http://localhost:8080/api/products?sort_by=ASE
-Accept: application/json
+### GET request to get single order
+GET http://localhost:8080/api/orders/:id
 
-### GET request with environment variables
-GET {{host}}/get?show_env={{show_env}}
-Accept: application/json
-
-### GET request with disabled redirects
-# @no-redirect
-GET http://httpbin.org/status/301
-
-### GET request with dynamic variables
-GET http://httpbin.org/anything?id={{$uuid}}&ts={{$timestamp}}
-
-###
-
-
-
-
-### Send POST request with json body
-POST https://httpbin.org/post
-Content-Type: application/json
+### Send POST request to create order with data
+POST http://localhost:8080/api/orders/create
 
 {
-  "id": 999,
-  "value": "content"
+    "customer": {
+        "customerId": "45eb8da7-4f40-4ae4-998b-840d1e8f55f5"
+    },
+    "products": {
+        "productId": "e19c5212-2d3c-4e66-b153-9782899ec8f5"
+    }
 }
 
-### Send POST request with body as parameters
-POST https://httpbin.org/post
-Content-Type: application/x-www-form-urlencoded
 
-id=999&value=content
+### SEND PUT request to updated the order status by id
+PUT http://localhost:8080/api/orders/approve/:id
 
-### Send a form with the text and file fields
-POST https://httpbin.org/post
-Content-Type: multipart/form-data; boundary=WebAppBoundary
 
---WebAppBoundary
-Content-Disposition: form-data; name="element-name"
-Content-Type: text/plain
-
-Name
---WebAppBoundary
-Content-Disposition: form-data; name="data"; filename="data.json"
-Content-Type: application/json
-
-< ./request-form-data.json
---WebAppBoundary--
-
-### Send request with dynamic variables in request's body
-POST https://httpbin.org/post
-Content-Type: application/json
-
-{
-  "id": {{$uuid}},
-  "price": {{$randomInt}},
-  "ts": {{$timestamp}},
-  "value": "content"
-}
-
-###
+### Send DELETE request if an order is to be rejected.
+DELETE http://localhost:8080/api/orders/reject/:id

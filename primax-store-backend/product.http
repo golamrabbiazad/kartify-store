@@ -18,7 +18,7 @@ http://localhost:8080/api/products/search?name=product_name
 
 
 
-### Send POST request with json body
+### Send POST request with product data
 POST http://localhost:8080//api/products
 Content-Type: application/json
 
