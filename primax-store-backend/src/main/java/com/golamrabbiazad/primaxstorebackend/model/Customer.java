@@ -21,15 +21,13 @@ import java.util.UUID;
 @Builder
 public class Customer {
     @Id
-    private String customerId = UUID.randomUUID().toString();
+    private final String customerId = UUID.randomUUID().toString();
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
-    private String gender;
 
     @Column(nullable = false)
     private String password;

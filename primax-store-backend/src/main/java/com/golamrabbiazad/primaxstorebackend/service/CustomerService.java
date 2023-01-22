@@ -2,10 +2,12 @@ package com.golamrabbiazad.primaxstorebackend.service;
 
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.model.Customer;
+import com.golamrabbiazad.primaxstorebackend.model.dto.LoginUser;
 import com.golamrabbiazad.primaxstorebackend.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CustomerService {
@@ -26,6 +28,10 @@ public class CustomerService {
         }
 
         return customer.get();
+    }
+
+    public Customer getCustomerByEmailAndPassword(LoginUser user) throws CustomerNotFoundException {
+        return customerRepository.findCustomerByEmailAndPassword(user.email(), user.password());
     }
 
     public void createCustomer(Customer customer) {

@@ -3,6 +3,7 @@ package com.golamrabbiazad.primaxstorebackend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,9 +30,11 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
+    @Min(value = 1, message = "price should be greater than 1")
     private Double price;
 
     @Column(nullable = false)
+    @Min(value = 1, message = "quantity should be greater than 1")
     private Integer quantity;
 
     private String image;

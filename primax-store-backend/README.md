@@ -43,7 +43,8 @@ Enpoints and Methods are:
 ```
 - /api/customers (GET)
 - /api/customers/:id (GET)
-- /api/customers/create (POST)
+- /api/customers/register (POST)
+- /api/customers/login (GET)
 - /api/products (GET, POST)
 - /api/products/:id (GET, PUT, DELETE)
 - /api/products/search?name=product_name (GET)

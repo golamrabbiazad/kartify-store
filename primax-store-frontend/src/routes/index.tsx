@@ -21,11 +21,14 @@ export default function Home() {
   const { products } = useRouteData<typeof routeData>();
 
   return (
-    <Show when={products} fallback={<p>Products could not fetched...</p>}>
+    <Show when={products}>
       <div class="bg-white">
-        <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+        <div class="min-h-screen mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+            Products
+          </h2>
           <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            <For each={products()} fallback={<div>Loading...</div>}>
+            <For each={products()} fallback={<div>Not found!</div>}>
               {(product) => (
                 <div>
                   <A href={`/product/${product.productId}`}>
@@ -44,13 +47,13 @@ export default function Home() {
                               aria-hidden="true"
                               class="absolute inset-0"
                             ></span>
-                            {product.name}
+                            {product.name.toUpperCase()}
                           </h3>
                           <p class="mt-1 text-sm text-gray-500">
                             {product.description}
                           </p>
                         </div>
-                        <p class="text-sm font-medium text-gray-900">
+                        <p class="text-sm font-semibold text-gray-900">
                           ${product.price}
                         </p>
                       </div>
