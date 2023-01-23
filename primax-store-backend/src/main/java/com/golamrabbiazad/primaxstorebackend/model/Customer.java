@@ -3,6 +3,7 @@ package com.golamrabbiazad.primaxstorebackend.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,13 +13,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "customers", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email"})
-})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "customers", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"email"})
+})
 public class Customer {
     @Id
     private final String customerId = UUID.randomUUID().toString();

@@ -2,6 +2,7 @@ package com.golamrabbiazad.primaxstorebackend.controller;
 
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.model.Customer;
+import com.golamrabbiazad.primaxstorebackend.model.dto.EmailFoundResponse;
 import com.golamrabbiazad.primaxstorebackend.model.dto.LoginUser;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
 import jakarta.validation.Valid;
@@ -32,17 +33,23 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Customer getCustomer(@RequestBody @Valid Customer customer) {
-        customerService.createCustomer(customer);
+    public ResponseEntity<Object> getCustomer(@RequestBody @Valid Customer customer) {
+        var response = customerService.createCustomer(customer);
+        if (response != null) {
+            return new ResponseEntity<>(response.email() + " already exists!", HttpStatus.CONFLICT);
+        }
 
-        log.info("customer created!");
-        return customer;
+        return new ResponseEntity<>("Success", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Customer> login(@RequestBody @Valid LoginUser user) {
+    public ResponseEntity<Object> login(@RequestBody @Valid LoginUser user) {
         var customer = customerService.getCustomerByEmailAndPassword(user);
-        return ResponseEntity.ok(customer);
+
+        if (customer == null) {
+            return new ResponseEntity<>(user.email() + " not found", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(customer, HttpStatus.FOUND);
     }
 }

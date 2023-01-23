@@ -2,14 +2,18 @@ package com.golamrabbiazad.primaxstorebackend.service;
 
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.model.Customer;
+import com.golamrabbiazad.primaxstorebackend.model.dto.EmailFoundResponse;
 import com.golamrabbiazad.primaxstorebackend.model.dto.LoginUser;
 import com.golamrabbiazad.primaxstorebackend.repository.CustomerRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@Slf4j
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
@@ -34,7 +38,16 @@ public class CustomerService {
         return customerRepository.findCustomerByEmailAndPassword(user.email(), user.password());
     }
 
-    public void createCustomer(Customer customer) {
+    public EmailFoundResponse createCustomer(Customer customer) {
+        var existsCustomer = customerRepository.findCustomerByEmail(customer.getEmail());
+
+        if (existsCustomer != null) {
+            log.info("customer already exists!");
+            return new EmailFoundResponse(existsCustomer.getEmail());
+        }
+
         customerRepository.save(customer);
+        log.info("customer created!");
+        return null;
     }
 }
