@@ -1,4 +1,4 @@
-package com.golamrabbiazad.primaxstorebackend.model;
+package com.golamrabbiazad.primaxstorebackend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;

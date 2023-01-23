@@ -1,4 +1,4 @@
-package com.golamrabbiazad.primaxstorebackend.model;
+package com.golamrabbiazad.primaxstorebackend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

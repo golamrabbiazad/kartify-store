@@ -1,8 +1,7 @@
 package com.golamrabbiazad.primaxstorebackend.controller;
 
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
-import com.golamrabbiazad.primaxstorebackend.model.Customer;
-import com.golamrabbiazad.primaxstorebackend.model.dto.EmailFoundResponse;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Customer;
 import com.golamrabbiazad.primaxstorebackend.model.dto.LoginUser;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
 import jakarta.validation.Valid;

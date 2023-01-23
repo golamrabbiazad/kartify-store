@@ -2,7 +2,7 @@ package com.golamrabbiazad.primaxstorebackend.controller;
 
 import com.golamrabbiazad.primaxstorebackend.exception.CustomerNotFoundException;
 import com.golamrabbiazad.primaxstorebackend.exception.OrderNotFoundException;
-import com.golamrabbiazad.primaxstorebackend.model.Order;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Order;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
 import com.golamrabbiazad.primaxstorebackend.service.OrderService;
 import com.golamrabbiazad.primaxstorebackend.service.ProductService;

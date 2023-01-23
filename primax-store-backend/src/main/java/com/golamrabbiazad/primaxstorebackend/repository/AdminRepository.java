@@ -1,6 +1,6 @@
 package com.golamrabbiazad.primaxstorebackend.repository;
 
-import com.golamrabbiazad.primaxstorebackend.model.Admin;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

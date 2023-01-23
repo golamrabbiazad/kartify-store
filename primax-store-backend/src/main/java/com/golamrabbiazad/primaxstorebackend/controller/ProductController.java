@@ -1,7 +1,7 @@
 package com.golamrabbiazad.primaxstorebackend.controller;
 
 import com.golamrabbiazad.primaxstorebackend.exception.ProductNotFoundException;
-import com.golamrabbiazad.primaxstorebackend.model.Product;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Product;
 import com.golamrabbiazad.primaxstorebackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

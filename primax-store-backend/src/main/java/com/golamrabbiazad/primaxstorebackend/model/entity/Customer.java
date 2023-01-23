@@ -1,9 +1,8 @@
-package com.golamrabbiazad.primaxstorebackend.model;
+package com.golamrabbiazad.primaxstorebackend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

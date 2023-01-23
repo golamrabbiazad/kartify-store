@@ -1,7 +1,7 @@
 package com.golamrabbiazad.primaxstorebackend.service;
 
 import com.golamrabbiazad.primaxstorebackend.exception.ProductNotFoundException;
-import com.golamrabbiazad.primaxstorebackend.model.Product;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Product;
 import com.golamrabbiazad.primaxstorebackend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.golamrabbiazad.primaxstorebackend.service;
 
 import com.golamrabbiazad.primaxstorebackend.exception.OrderNotFoundException;
-import com.golamrabbiazad.primaxstorebackend.model.Order;
+import com.golamrabbiazad.primaxstorebackend.model.entity.Order;
 import com.golamrabbiazad.primaxstorebackend.model.OrderStatus;
 import com.golamrabbiazad.primaxstorebackend.repository.OrderRepository;
 import org.springframework.stereotype.Service;
