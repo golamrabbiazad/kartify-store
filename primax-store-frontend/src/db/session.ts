@@ -41,13 +41,13 @@ export async function register({
         }),
       }
     );
-    const user = await response.json();
-
-    if (!user) return null;
+    const user = await response.text();
 
     return user;
   } catch (error) {
-    console.error("ERROR: ", error);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
   }
 }
 
@@ -69,13 +69,20 @@ export async function login({ email, password }: LoginForm) {
 
     const user = await response.json();
 
-    if (!user) return null;
+    if (!user) {
+      throw new Error("User not found!");
+    }
+
     const isCorrectPassword = password === user.password;
-    if (!isCorrectPassword) return null;
+    if (!isCorrectPassword) {
+      throw new Error("Password doesn't match.");
+    }
 
     return user;
   } catch (error) {
-    console.error("Error:", error);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
   }
 }
 

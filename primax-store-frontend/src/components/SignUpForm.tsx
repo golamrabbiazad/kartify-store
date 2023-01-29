@@ -1,13 +1,63 @@
-import { createServerAction$ } from "solid-start/server";
+import { Show } from "solid-js";
+import { FormError } from "solid-start";
+import { createServerAction$, redirect } from "solid-start/server";
+import { register } from "~/db/session";
+
+function validateFirstName(firstName: unknown) {
+  if (typeof firstName !== "string" || firstName.length < 4) {
+    return `FirstName must be at least 4 characters long`;
+  }
+}
+
+function validateLastName(lastName: unknown) {
+  if (typeof lastName !== "string" || lastName.length < 3) {
+    return `LastName must be at least 3 characters long`;
+  }
+}
+
+function validateEmail(email: unknown) {
+  if (typeof email !== "string" || email.length < 4) {
+    return `Email must be at least 4 characters long`;
+  }
+}
+
+function validatePassword(password: unknown) {
+  if (typeof password !== "string" || password.length < 5) {
+    return `Password must be at least 8 characters long`;
+  }
+}
+
+function validatePhoneNumber(phoneNumber: unknown) {
+  if (typeof phoneNumber !== "string" || phoneNumber.length < 9) {
+    return `PhoneNumber must be at least 9 characters long`;
+  }
+}
+
+function validateAddress(address: unknown) {
+  if (typeof address !== "string") {
+    return "Address not valid.";
+  }
+}
 
 export function SignUpForm() {
-  const [_, { Form }] = createServerAction$(async (form: FormData) => {
+  const [loggingIn, { Form }] = createServerAction$(async (form: FormData) => {
     const firstName = form.get("firstname");
-    const lastName = form.get("lastName");
+    const lastName = form.get("lastname");
     const email = form.get("email");
     const password = form.get("password");
     const phoneNumber = form.get("phone");
     const address = form.get("address");
+
+    if (
+      typeof firstName !== "string" ||
+      typeof lastName !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      typeof phoneNumber !== "string" ||
+      typeof address !== "string"
+    ) {
+      throw new FormError(`Form not submitted correctly.`);
+    }
 
     const fields = {
       firstName,
@@ -26,6 +76,30 @@ export function SignUpForm() {
       phoneNumber: validatePhoneNumber(phoneNumber),
       address: validateAddress(address),
     };
+
+    if (Object.values(fieldErrors).some(Boolean)) {
+      throw new FormError(`Fields invalid`, {
+        fieldErrors,
+        fields,
+      });
+    }
+
+    const newCustomer = await register({
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      address,
+    });
+
+    if (!newCustomer) {
+      throw new FormError(`Somewhat details are incorrect.`, {
+        fields,
+      });
+    }
+
+    return redirect("/signin");
   });
 
   return (
@@ -51,6 +125,9 @@ export function SignUpForm() {
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.firstName}>
+                    <p role="alert">{loggingIn.error.fieldErrors.firstName}</p>
+                  </Show>
 
                   <div class="col-span-6 sm:col-span-3">
                     <label
@@ -67,6 +144,9 @@ export function SignUpForm() {
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.lastName}>
+                    <p role="alert">{loggingIn.error.fieldErrors.lastName}</p>
+                  </Show>
 
                   <div class="col-span-6 sm:col-span-6">
                     <label
@@ -80,9 +160,13 @@ export function SignUpForm() {
                       name="email"
                       id="email"
                       autocomplete="email"
+                      required
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.email}>
+                    <p role="alert">{loggingIn.error.fieldErrors.email}</p>
+                  </Show>
 
                   <div class="col-span-6 sm:col-span-6">
                     <label
@@ -96,10 +180,12 @@ export function SignUpForm() {
                       name="password"
                       type="password"
                       autocomplete="current-password"
-                      required
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.password}>
+                    <p role="alert">{loggingIn.error.fieldErrors.password}</p>
+                  </Show>
 
                   <div class="col-span-6 sm:col-span-6">
                     <label
@@ -116,6 +202,11 @@ export function SignUpForm() {
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.phoneNumber}>
+                    <p role="alert">
+                      {loggingIn.error.fieldErrors.phoneNumber}
+                    </p>
+                  </Show>
 
                   <div class="col-span-6">
                     <label
@@ -132,14 +223,22 @@ export function SignUpForm() {
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
+                  <Show when={loggingIn.error?.fieldErrors?.address}>
+                    <p role="alert">{loggingIn.error.fieldErrors.address}</p>
+                  </Show>
                 </div>
               </div>
+              <Show when={loggingIn.error}>
+                <p role="alert" id="error-message">
+                  {loggingIn.error.message}
+                </p>
+              </Show>
               <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
                 <button
                   type="submit"
                   class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Create
+                  Sign Up
                 </button>
               </div>
             </div>
@@ -148,27 +247,4 @@ export function SignUpForm() {
       </div>
     </div>
   );
-}
-function validateFirstName(firstName: FormDataEntryValue | null) {
-  throw new Error("Function not implemented.");
-}
-
-function validateLastName(lastName: unknown) {
-  throw new Error("Function not implemented.");
-}
-
-function validateEmail(email: unknown) {
-  throw new Error("Function not implemented.");
-}
-
-function validatePassword(password: unknown) {
-  throw new Error("Function not implemented.");
-}
-
-function validatePhoneNumber(phoneNumber: unknown) {
-  throw new Error("Function not implemented.");
-}
-
-function validateAddress(address: unknown) {
-  throw new Error("Function not implemented.");
 }

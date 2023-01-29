@@ -46,6 +46,7 @@ export function LoginForm() {
       email: validateUsername(email),
       password: validatePassword(password),
     };
+
     if (Object.values(fieldErrors).some(Boolean)) {
       throw new FormError("Fields invalid", { fieldErrors, fields });
     }
@@ -79,9 +80,6 @@ export function LoginForm() {
             placeholder="Email address"
           />
         </div>
-        <Show when={loggingIn.error?.fieldErrors?.email}>
-          <p role="alert">{loggingIn.error.fieldErrors.email}</p>
-        </Show>
         <div>
           <label for="password" class="sr-only">
             Password
@@ -96,9 +94,6 @@ export function LoginForm() {
             placeholder="Password"
           />
         </div>
-        <Show when={loggingIn.error?.fieldErrors?.password}>
-          <p role="alert">{loggingIn.error.fieldErrors.password}</p>
-        </Show>
       </div>
 
       <div class="flex items-center justify-between">
@@ -121,7 +116,11 @@ export function LoginForm() {
         </div>
       </div>
       <Show when={loggingIn.error}>
-        <p role="alert" id="error-message">
+        <p
+          role="alert"
+          id="error-message"
+          class="bg-red-500 text-white text-md p-4 rounded-md"
+        >
           {loggingIn.error.message}
         </p>
       </Show>
