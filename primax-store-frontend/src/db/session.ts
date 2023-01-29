@@ -109,7 +109,7 @@ export function getUserSession(request: Request) {
 export async function getUserId(request: Request) {
   const session = await getUserSession(request);
 
-  const userId = session.get("customerId");
+  const userId = session.get("userId");
   if (!userId || typeof userId !== "string") return null;
   return userId;
 }
@@ -127,6 +127,16 @@ export async function requireUserId(
   return userId;
 }
 
+type Customer = {
+  customerId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string; // this should be hidden from backend when DTO redesigned.
+  phoneNumber: string;
+  address: string;
+};
+
 export async function getUser(request: Request) {
   const userId = await getUserId(request);
   if (typeof userId !== "string") {
@@ -137,7 +147,8 @@ export async function getUser(request: Request) {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/customers/${userId}`
     );
-    const user = await response.json();
+    const user = (await response.json()) as Customer;
+
     return user;
   } catch {
     throw logout(request);
@@ -146,7 +157,7 @@ export async function getUser(request: Request) {
 
 export async function logout(request: Request) {
   const session = await storage.getSession(request.headers.get("Cookie"));
-  return redirect("/login", {
+  return redirect("/signin", {
     headers: {
       "Set-Cookie": await storage.destroySession(session),
     },
