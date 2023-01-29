@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "customers", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email"})
 })
-public class  Customer {
+public class Customer {
     @Id
     private final String customerId = UUID.randomUUID().toString();
     @Column(nullable = false)

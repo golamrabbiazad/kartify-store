@@ -1,6 +1,30 @@
-import { A } from "solid-start";
+import { Show } from "solid-js";
+import { A, useRouteData } from "solid-start";
+import {
+  createServerAction$,
+  createServerData$,
+  redirect,
+} from "solid-start/server";
+import { getUser, logout } from "~/db/session";
+
+export function routeData() {
+  return createServerData$(async (_, { request }) => {
+    const user = await getUser(request);
+
+    if (!user) {
+      throw redirect("/signin");
+    }
+
+    return user;
+  });
+}
 
 export function Headers() {
+  const user = useRouteData<typeof routeData>();
+  const [, { Form }] = createServerAction$((form: FormData, { request }) =>
+    logout(request)
+  );
+
   return (
     <div class="relative bg-white">
       <div class="mx-auto max-w-7xl px-6">
@@ -42,17 +66,18 @@ export function Headers() {
           </div>
 
           <div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
+            {/* <Show when={true}>
+              <Form>
+                <button type="submit" name="logout">
+                  Logout
+                </button>
+              </Form>
+            </Show> */}
             <A
               href="/signin"
-              class="whitespace-nowrap text-base font-medium text-gray-500 hover:text-gray-900"
-            >
-              Sign in
-            </A>
-            <A
-              href="/signup"
               class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
             >
-              Sign up
+              Sign In
             </A>
           </div>
         </div>

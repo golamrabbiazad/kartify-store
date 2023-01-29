@@ -110,8 +110,11 @@ export function LoginForm() {
         </div>
 
         <div class="text-sm">
-          <A href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-            Forgot your password?
+          <A
+            href="/signup"
+            class="font-medium text-indigo-600 hover:text-indigo-500"
+          >
+            Create Account
           </A>
         </div>
       </div>
