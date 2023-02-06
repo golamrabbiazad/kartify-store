@@ -51,7 +51,10 @@ export async function register({
   }
 }
 
-export async function login({ email, password }: LoginForm) {
+export async function login({
+  email,
+  password,
+}: LoginForm): Promise<Customer | undefined> {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/customers/login`,
@@ -68,7 +71,6 @@ export async function login({ email, password }: LoginForm) {
     );
 
     const user = await response.json();
-
     if (!user) {
       throw new Error("User not found!");
     }
@@ -86,7 +88,7 @@ export async function login({ email, password }: LoginForm) {
   }
 }
 
-// const sessionSecret = import.meta.env.SESSION_SECRET;
+const sessionSecret = import.meta.env.VITE_SESSION_SECRET;
 
 const storage = createCookieSessionStorage({
   cookie: {
@@ -94,15 +96,17 @@ const storage = createCookieSessionStorage({
     // secure doesn't work on localhost for Safari
     // https://web.dev/when-to-use-local-https/
     secure: true,
-    secrets: ["hello"],
+    secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 30,
+    maxAge: 60 * 60 * 24 * 30, // 30 days
     httpOnly: true,
   },
 });
 
 export function getUserSession(request: Request) {
+  console.log(request.headers.get("Cookie"));
+
   return storage.getSession(request.headers.get("Cookie"));
 }
 
@@ -111,21 +115,22 @@ export async function getUserId(request: Request) {
 
   const userId = session.get("userId");
   if (!userId || typeof userId !== "string") return null;
+
   return userId;
 }
 
-export async function requireUserId(
-  request: Request,
-  redirectTo: string = new URL(request.url).pathname
-) {
-  const session = await getUserSession(request);
-  const userId = session.get("userId");
-  if (!userId || typeof userId !== "string") {
-    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/signin?${searchParams}`);
-  }
-  return userId;
-}
+// export async function requireUserId(
+//   request: Request,
+//   redirectTo: string = new URL(request.url).pathname
+// ) {
+//   const session = await getUserSession(request);
+//   const userId = session.get("userId");
+//   if (!userId || typeof userId !== "string") {
+//     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+//     throw redirect(`/signin?${searchParams}`);
+//   }
+//   return userId;
+// }
 
 type Customer = {
   customerId: string;
@@ -137,17 +142,17 @@ type Customer = {
   address: string;
 };
 
-export async function getUser(request: Request) {
-  const userId = await getUserId(request);
-  if (typeof userId !== "string") {
-    return null;
-  }
+export async function getUser(request: Request): Promise<Customer | null> {
+  const cookie = request.headers.get("Cookie") ?? "";
+  const session = await storage.getSession(cookie);
+  const userId = session.get("userId");
+  if (!userId) return null;
 
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/customers/${userId}`
     );
-    const user = (await response.json()) as Customer;
+    const user = await response.json();
 
     return user;
   } catch {

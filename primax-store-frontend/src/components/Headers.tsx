@@ -9,13 +9,20 @@ import { getUser, logout } from "~/db/session";
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    const user = await getUser(request);
+    // const user = await getUser(request);
+    // if (!user) {
+    //   throw redirect("/signin");
+    // }
 
-    if (!user) {
-      throw redirect("/signin");
-    }
-
-    return user;
+    return {
+      customerId: "287e92a9-d023-4264-8342-2c616884fb78",
+      firstName: "Brian",
+      lastName: "Holt",
+      email: "brianholt@stripe.com",
+      password: "stripe",
+      phoneNumber: "56985654521",
+      address: "Seattle, USA",
+    };
   });
 }
 
@@ -66,19 +73,26 @@ export function Headers() {
           </div>
 
           <div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
-            {/* <Show when={true}>
-              <Form>
+            <div>{"USER"}</div>
+            <Form>
+              <Show
+                when={true}
+                fallback={
+                  <button>
+                    <A
+                      href="/signin"
+                      class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                    >
+                      Sign In
+                    </A>
+                  </button>
+                }
+              >
                 <button type="submit" name="logout">
                   Logout
                 </button>
-              </Form>
-            </Show> */}
-            <A
-              href="/signin"
-              class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-            >
-              Sign In
-            </A>
+              </Show>
+            </Form>
           </div>
         </div>
       </div>
