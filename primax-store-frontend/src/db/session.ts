@@ -51,41 +51,29 @@ export async function register({
   }
 }
 
-export async function login({
-  email,
-  password,
-}: LoginForm): Promise<Customer | undefined> {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/customers/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    );
-
-    const user = await response.json();
-    if (!user) {
-      throw new Error("User not found!");
+export async function login({ email, password }: LoginForm) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/customers/login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     }
+  );
 
-    const isCorrectPassword = password === user.password;
-    if (!isCorrectPassword) {
-      throw new Error("Password doesn't match.");
-    }
+  const user = await response.json();
 
-    return user;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
+  const isCorrectPassword = password === user.password;
+  if (!isCorrectPassword) {
+    throw new Error("Password doesn't match.");
   }
+
+  return user;
 }
 
 const sessionSecret = import.meta.env.VITE_SESSION_SECRET;
@@ -110,6 +98,21 @@ export function getUserSession(request: Request) {
   return storage.getSession(request.headers.get("Cookie"));
 }
 
+export async function requireUserId(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+) {
+  const session = await getUserSession(request);
+  const userId = session.get("userId");
+
+  if (!userId || typeof userId !== "string") {
+    const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    throw redirect(`/signin?${searchParams}`);
+  }
+
+  return userId;
+}
+
 export async function getUserId(request: Request) {
   const session = await getUserSession(request);
 
@@ -119,34 +122,12 @@ export async function getUserId(request: Request) {
   return userId;
 }
 
-// export async function requireUserId(
-//   request: Request,
-//   redirectTo: string = new URL(request.url).pathname
-// ) {
-//   const session = await getUserSession(request);
-//   const userId = session.get("userId");
-//   if (!userId || typeof userId !== "string") {
-//     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-//     throw redirect(`/signin?${searchParams}`);
-//   }
-//   return userId;
-// }
+export async function getUser(request: Request) {
+  const userId = await getUserId(request);
 
-type Customer = {
-  customerId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string; // this should be hidden from backend when DTO redesigned.
-  phoneNumber: string;
-  address: string;
-};
+  if (typeof userId !== "string") return null;
 
-export async function getUser(request: Request): Promise<Customer | null> {
-  const cookie = request.headers.get("Cookie") ?? "";
-  const session = await storage.getSession(cookie);
-  const userId = session.get("userId");
-  if (!userId) return null;
+  console.log("UserID", userId);
 
   try {
     const response = await fetch(
@@ -172,6 +153,7 @@ export async function logout(request: Request) {
 export async function createUserSession(userId: string, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
+
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await storage.commitSession(session),

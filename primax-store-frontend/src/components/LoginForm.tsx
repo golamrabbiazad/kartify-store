@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
-import { A, FormError, redirect, useParams, useRouteData } from "solid-start";
-import { createServerAction$, createServerData$ } from "solid-start/server";
-import { createUserSession, getUser, login } from "~/db/session";
+import { A, FormError, useParams } from "solid-start";
+import { createServerAction$ } from "solid-start/server";
+import { createUserSession, login } from "~/db/session";
 
 function validateUsername(username: unknown) {
   if (typeof username !== "string" || username.length < 3) {
@@ -15,18 +15,18 @@ function validatePassword(password: unknown) {
   }
 }
 
-export function routeData() {
-  return createServerData$(async (_, { request }) => {
-    if (await getUser(request)) {
-      throw redirect("/");
-    }
+// export function routeData() {
+//   return createServerData$(async (_, { request }) => {
+//     if (await getUser(request)) {
+//       throw redirect("/");
+//     }
 
-    return {};
-  });
-}
+//     return {};
+//   });
+// }
 
 export function LoginForm() {
-  const data = useRouteData<typeof routeData>(); // later will be implement
+  // const data = useRouteData<typeof routeData>(); // later will be implement
   const params = useParams();
 
   const [loggingIn, { Form }] = createServerAction$(async (form: FormData) => {
@@ -42,6 +42,7 @@ export function LoginForm() {
     }
 
     const fields = { email, password };
+
     const fieldErrors = {
       email: validateUsername(email),
       password: validatePassword(password),
@@ -51,7 +52,7 @@ export function LoginForm() {
       throw new FormError("Fields invalid", { fieldErrors, fields });
     }
 
-    const customer = await login({ email, password });
+    const customer = await login(fields);
 
     if (!customer) {
       throw new FormError(`Username/Password combination is incorrect`, {

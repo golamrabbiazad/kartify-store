@@ -6,6 +6,7 @@ import com.golamrabbiazad.primaxstorebackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable String id) throws ProductNotFoundException {
-        return productService.getProduct(id);
+    public ResponseEntity<Product> getProduct(@PathVariable String id) throws ProductNotFoundException {
+         Product product = productService.getProduct(id);
+         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @GetMapping(value = "/search")

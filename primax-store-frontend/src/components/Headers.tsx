@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { A, useRouteData } from "solid-start";
+import { A } from "solid-start";
 import {
   createServerAction$,
   createServerData$,
@@ -9,26 +9,20 @@ import { getUser, logout } from "~/db/session";
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    // const user = await getUser(request);
-    // if (!user) {
-    //   throw redirect("/signin");
-    // }
+    const user = await getUser(request);
 
-    return {
-      customerId: "287e92a9-d023-4264-8342-2c616884fb78",
-      firstName: "Brian",
-      lastName: "Holt",
-      email: "brianholt@stripe.com",
-      password: "stripe",
-      phoneNumber: "56985654521",
-      address: "Seattle, USA",
-    };
+    if (!user) {
+      throw redirect("/signin");
+    }
+
+    return { user };
   });
 }
 
 export function Headers() {
-  const user = useRouteData<typeof routeData>();
-  const [, { Form }] = createServerAction$((form: FormData, { request }) =>
+  // const product = useRouteData<typeof routeData>();
+
+  const [, { Form }] = createServerAction$((f: FormData, { request }) =>
     logout(request)
   );
 
@@ -73,23 +67,21 @@ export function Headers() {
           </div>
 
           <div class="hidden items-center justify-end md:flex md:flex-1 lg:w-0">
-            <div>{"USER"}</div>
             <Form>
               <Show
-                when={true}
+                when={false}
                 fallback={
                   <button>
-                    <A
-                      href="/signin"
-                      class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                    >
-                      Sign In
-                    </A>
+                    <A href="/signin">Sign In</A>
                   </button>
                 }
               >
-                <button type="submit" name="logout">
-                  Logout
+                <button
+                  type="submit"
+                  name="logout"
+                  class="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                >
+                  Sign Out
                 </button>
               </Show>
             </Form>

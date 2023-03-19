@@ -6,7 +6,6 @@ import com.golamrabbiazad.primaxstorebackend.model.dto.LoginUser;
 import com.golamrabbiazad.primaxstorebackend.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +16,23 @@ import java.util.List;
 @RequestMapping("/api/customers")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
-@Slf4j
 public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        List<Customer> customers = customerService.getAllCustomers();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Customer getCustomer(@PathVariable String id) throws CustomerNotFoundException {
-        return customerService.getCustomerById(id);
+    public ResponseEntity<Customer> getCustomer(@PathVariable String id) throws CustomerNotFoundException {
+        Customer customer = customerService.getCustomerById(id);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> getCustomer(@RequestBody @Valid Customer customer) {
+    public ResponseEntity<String> getCustomer(@Valid @RequestBody Customer customer) {
         var response = customerService.createCustomer(customer);
         if (response != null) {
             return new ResponseEntity<>(response.email() + " already exists!", HttpStatus.CONFLICT);
@@ -42,13 +42,9 @@ public class CustomerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid LoginUser user) {
+    public ResponseEntity<Customer> login(@RequestBody @Valid LoginUser user) {
         var customer = customerService.getCustomerByEmailAndPassword(user);
 
-        if (customer == null) {
-            return new ResponseEntity<>(user.email() + " not found", HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(customer, HttpStatus.FOUND);
+        return new ResponseEntity<>(customer, HttpStatus.ACCEPTED);
     }
 }
