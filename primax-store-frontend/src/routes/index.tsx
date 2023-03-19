@@ -1,12 +1,6 @@
 import { createResource } from "solid-js";
 import { useRouteData } from "solid-start";
-import {
-  createServerAction$,
-  createServerData$,
-  redirect,
-} from "solid-start/server";
 import { Products } from "~/components/Products";
-import { getUser, logout } from "~/db/session";
 import { ProductType } from "~/types/product";
 
 export function routeData() {

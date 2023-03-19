@@ -1,5 +1,5 @@
-import { createResource, Show } from "solid-js";
-import { useParams } from "solid-start";
+import { Show } from "solid-js";
+import { createRouteData, RouteDataArgs, useRouteData } from "solid-start";
 
 import { ProductType } from "~/types/product";
 
@@ -9,13 +9,21 @@ async function fetchUser(id: string): Promise<ProductType> {
   return (await resp).json();
 }
 
-export default function ProductPage() {
-  const params = useParams<{ id: string }>();
+export const routeData = ({ params }: RouteDataArgs) =>
+  createRouteData(fetchUser, { key: () => params.id });
 
-  const [product] = createResource(() => fetchUser(params.id));
+export default function ProductPage() {
+  const product = useRouteData<typeof routeData>();
 
   return (
-    <Show when={product()} fallback={<p>Single product not found!</p>}>
+    <Show
+      when={product.state === "ready"}
+      fallback={
+        <p class="text-center text-4xl text-black font-bold">
+          Product not found!
+        </p>
+      }
+    >
       <section class="text-gray-700 body-font overflow-hidden bg-white">
         <div class="container px-5 py-24 mx-auto">
           <div class="lg:w-4/6 mx-auto flex flex-wrap">

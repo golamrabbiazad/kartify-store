@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,12 +30,7 @@ public class ProductService {
     }
 
     public Product getProduct(String id) throws ProductNotFoundException {
-        var product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            throw new ProductNotFoundException("Product with id " + id + " not found.");
-        }
-
-        return product.get();
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found."));
     }
 
     public List<Product> searchProductByName(String name) {
